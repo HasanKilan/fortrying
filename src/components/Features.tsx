@@ -3,23 +3,23 @@ import { Truck, RefreshCcw, ShieldCheck, Clock } from "lucide-react";
 
 const features = [
   {
-    title: "Free Shipping",
-    description: "On orders over $50",
+    title: "شحن مجاني",
+    description: "للطلبات فوق 50 دولار",
     icon: Truck,
   },
   {
-    title: "Easy Returns",
-    description: "30-day return policy",
+    title: "إرجاع سهل",
+    description: "سياسة إرجاع 30 يومًا",
     icon: RefreshCcw,
   },
   {
-    title: "Secure Payments",
-    description: "Protected checkout",
+    title: "دفع آمن",
+    description: "حماية عند الدفع",
     icon: ShieldCheck,
   },
   {
-    title: "24/7 Support",
-    description: "Always here to help",
+    title: "دعم 24/7",
+    description: "متواجدون دائمًا للمساعدة",
     icon: Clock,
   },
 ];

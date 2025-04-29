@@ -5,16 +5,16 @@ import { Button } from "./ui/button";
 
 export const Footer = () => {
   const categories = [
-    "Women", "Men", "Kids", "Home & Living", "Beauty", "Electronics", "Sports"
+    "نساء", "رجال", "أطفال", "منزل وديكور", "جمال", "إلكترونيات", "رياضة"
   ];
 
   const companyLinks = [
-    "About Us", "Careers", "Partner with Us", "Press", "Contact Us"
+    "من نحن", "وظائف", "الشراكة معنا", "الصحافة", "اتصل بنا"
   ];
 
   const helpLinks = [
-    "Shipping & Delivery", "Returns & Exchanges", "FAQ", "Payment Options",
-    "Size Guide", "Privacy Policy", "Terms of Service"
+    "الشحن والتوصيل", "الإرجاع والاستبدال", "الأسئلة الشائعة", "خيارات الدفع",
+    "دليل المقاسات", "سياسة الخصوصية", "شروط الخدمة"
   ];
 
   return (
@@ -23,7 +23,7 @@ export const Footer = () => {
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 mb-8">
           {/* Categories */}
           <div>
-            <h4 className="text-lg font-medium mb-4">Categories</h4>
+            <h4 className="text-lg font-medium mb-4">الفئات</h4>
             <ul className="space-y-2">
               {categories.map((category, index) => (
                 <li key={index}>
@@ -37,7 +37,7 @@ export const Footer = () => {
 
           {/* Company */}
           <div>
-            <h4 className="text-lg font-medium mb-4">Company</h4>
+            <h4 className="text-lg font-medium mb-4">الشركة</h4>
             <ul className="space-y-2">
               {companyLinks.map((link, index) => (
                 <li key={index}>
@@ -51,7 +51,7 @@ export const Footer = () => {
 
           {/* Help & Support */}
           <div>
-            <h4 className="text-lg font-medium mb-4">Help & Support</h4>
+            <h4 className="text-lg font-medium mb-4">المساعدة والدعم</h4>
             <ul className="space-y-2">
               {helpLinks.map((link, index) => (
                 <li key={index}>
@@ -65,17 +65,17 @@ export const Footer = () => {
 
           {/* Newsletter */}
           <div>
-            <h4 className="text-lg font-medium mb-4">Newsletter</h4>
+            <h4 className="text-lg font-medium mb-4">النشرة الإخبارية</h4>
             <p className="text-gray-300 mb-4">
-              Subscribe to get special offers, free giveaways, and once-in-a-lifetime deals.
+              اشترك للحصول على عروض خاصة وهدايا مجانية وصفقات فريدة من نوعها.
             </p>
             <div className="flex flex-col sm:flex-row gap-2">
               <Input 
-                placeholder="Your email" 
+                placeholder="بريدك الإلكتروني" 
                 className="bg-trendyol-black border-gray-600 text-white placeholder:text-gray-400"
               />
               <Button className="bg-trendyol-orange hover:bg-trendyol-orange/90 text-white">
-                Subscribe
+                اشترك
               </Button>
             </div>
           </div>
@@ -84,7 +84,7 @@ export const Footer = () => {
         {/* Social & Payment */}
         <div className="border-t border-gray-800 pt-8 mt-8">
           <div className="flex flex-col md:flex-row justify-between items-center">
-            <div className="flex space-x-4 mb-4 md:mb-0">
+            <div className="flex space-x-0 space-x-reverse space-x-4 mb-4 md:mb-0">
               <a href="#" className="p-2 bg-gray-800 rounded-full hover:bg-gray-700 transition-colors">
                 <Facebook className="h-5 w-5" />
               </a>
@@ -99,7 +99,7 @@ export const Footer = () => {
               </a>
             </div>
             <div className="text-gray-400 text-sm">
-              &copy; {new Date().getFullYear()} TrendHaven. All rights reserved.
+              &copy; {new Date().getFullYear()} TrendHaven. جميع الحقوق محفوظة.
             </div>
           </div>
         </div>

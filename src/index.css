@@ -1,5 +1,6 @@
 
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;800&display=swap');
 
 @tailwind base;
 @tailwind components;
@@ -56,6 +57,11 @@
   body {
     @apply bg-background text-foreground font-sans;
   }
+
+  html {
+    direction: rtl;
+    font-family: 'Tajawal', 'Inter', sans-serif;
+  }
 }
 
 .product-card-hover:hover .add-to-cart {
@@ -75,7 +81,7 @@
 }
 
 .nav-link::after {
-  @apply content-[''] absolute w-0 h-0.5 bg-trendyol-orange bottom-0 left-0 transition-all duration-200;
+  @apply content-[''] absolute w-0 h-0.5 bg-trendyol-orange bottom-0 right-0 transition-all duration-200;
 }
 
 .nav-link:hover::after {
@@ -83,5 +89,23 @@
 }
 
 .badge-count {
-  @apply absolute -top-1.5 -right-1.5 w-5 h-5 bg-trendyol-orange text-white rounded-full text-xs flex items-center justify-center;
+  @apply absolute -top-1.5 -left-1.5 w-5 h-5 bg-trendyol-orange text-white rounded-full text-xs flex items-center justify-center;
 }
+
+.rtl-flip {
+  transform: scaleX(-1);
+}
+
+.rtl-rotate-180 {
+  transform: rotate(180deg);
+}
+
+/* RTL specific adjustments */
+.rtl-search-icon {
+  @apply right-3 left-auto;
+}
+
+.rtl-search-button {
+  @apply left-1 right-auto;
+}
+

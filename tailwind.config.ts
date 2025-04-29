@@ -106,7 +106,7 @@ export default {
 				'fade-in': 'fade-in 0.3s ease-out',
 			},
 			fontFamily: {
-				sans: ['Inter', 'sans-serif'],
+				sans: ['Tajawal', 'Inter', 'sans-serif'],
 			}
 		}
 	},
