@@ -1,5 +1,5 @@
 
-import { Facebook, Twitter, Instagram, YouTube } from "lucide-react";
+import { Facebook, Twitter, Instagram, Youtube } from "lucide-react";
 import { Input } from "./ui/input";
 import { Button } from "./ui/button";
 
