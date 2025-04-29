@@ -55,12 +55,14 @@
   }
 
   body {
-    @apply bg-background text-foreground font-sans;
+    @apply bg-background text-foreground font-sans overflow-x-hidden;
   }
 
   html {
     direction: rtl;
     font-family: 'Tajawal', 'Inter', sans-serif;
+    overflow-x: hidden;
+    width: 100%;
   }
 }
 
@@ -109,3 +111,17 @@
   @apply left-1 right-auto;
 }
 
+/* Fix for horizontal scrolling */
+#root {
+  width: 100%;
+  max-width: 100%;
+  overflow-x: hidden;
+}
+
+.container {
+  width: 100%;
+  max-width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+  overflow-x: hidden;
+}

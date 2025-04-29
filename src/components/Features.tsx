@@ -26,7 +26,7 @@ const features = [
 
 export const Features = () => {
   return (
-    <div className="bg-trendyol-lightGray py-10">
+    <div className="bg-trendyol-lightGray py-10 w-full overflow-hidden">
       <div className="container px-4 mx-auto">
         <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
           {features.map((feature, index) => (

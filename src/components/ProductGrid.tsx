@@ -79,7 +79,7 @@ interface ProductGridProps {
 
 export const ProductGrid = ({ title = "Featured Products", subtitle }: ProductGridProps) => {
   return (
-    <div className="py-10">
+    <div className="py-10 w-full overflow-hidden">
       <div className="container px-4 mx-auto">
         {title && (
           <div className="mb-8 text-center">

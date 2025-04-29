@@ -3,7 +3,7 @@ import { Button } from "./ui/button";
 
 export const Hero = () => {
   return (
-    <div className="relative bg-gradient-to-l from-gray-900 to-gray-800 text-white">
+    <div className="relative bg-gradient-to-l from-gray-900 to-gray-800 text-white w-full overflow-hidden">
       <div className="container mx-auto px-4 py-16 md:py-24 flex flex-col md:flex-row-reverse items-center">
         <div className="md:w-1/2 md:pl-8 mb-8 md:mb-0 z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">مجموعة ربيع 2025</h1>
