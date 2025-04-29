@@ -95,7 +95,7 @@ export const Footer = () => {
                 <Instagram className="h-5 w-5" />
               </a>
               <a href="#" className="p-2 bg-gray-800 rounded-full hover:bg-gray-700 transition-colors">
-                <YouTube className="h-5 w-5" />
+                <Youtube className="h-5 w-5" />
               </a>
             </div>
             <div className="text-gray-400 text-sm">
