@@ -1,3 +1,4 @@
+// Localized Hero.tsx — Arabic marketing banner section
 
 import { Button } from "./ui/button";
 
@@ -8,15 +9,14 @@ export const Hero = () => {
         <div className="md:w-1/2 md:pl-8 mb-8 md:mb-0 z-10">
           <h1 className="text-4xl md:text-5xl font-bold mb-4">مجموعة ربيع 2025</h1>
           <p className="text-lg md:text-xl mb-6 opacity-90">
-            اكتشف أحدث صيحات الموضة مع مجموعة الربيع الجديدة لدينا.
-            خصم يصل إلى 50٪ على منتجات مختارة.
+            اكتشف أحدث صيحات الموضة مع مجموعتنا الجديدة لهذا الموسم. خصومات تصل إلى 50٪ على منتجات مختارة.
           </p>
           <div className="flex flex-wrap gap-4">
             <Button 
               size="lg" 
               className="bg-trendyol-orange hover:bg-trendyol-orange/90 text-white"
             >
-              تسوق الآن
+              تسوّق الآن
             </Button>
             <Button 
               size="lg" 
@@ -27,6 +27,7 @@ export const Hero = () => {
             </Button>
           </div>
         </div>
+
         <div className="md:w-1/2 relative">
           <div className="rounded-lg bg-white/10 p-2 shadow-xl animate-fade-in">
             <div className="aspect-[4/3] rounded overflow-hidden">
@@ -38,7 +39,7 @@ export const Hero = () => {
             </div>
           </div>
           <div className="absolute -bottom-4 -left-4 bg-trendyol-orange text-white font-bold px-4 py-2 rounded-lg shadow-lg transform md:scale-110 animate-fade-in">
-            <p className="text-sm">وقت محدود</p>
+            <p className="text-sm">لفترة محدودة</p>
             <p className="text-xl">-50٪</p>
           </div>
         </div>

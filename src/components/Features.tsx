@@ -1,48 +1,53 @@
+// Localized Features.tsx — Arabic features section
 
-import { Truck, RefreshCcw, ShieldCheck, Clock } from "lucide-react";
+import {
+  Truck,
+  ShieldCheck,
+  RefreshCcw,
+  BadgePercent,
+} from "lucide-react";
 
 const features = [
   {
-    title: "شحن مجاني",
-    description: "للطلبات فوق 50 دولار",
     icon: Truck,
+    title: "شحن سريع",
+    description: "نوصل طلباتك خلال 2-4 أيام عمل في جميع أنحاء البلاد.",
   },
   {
-    title: "إرجاع سهل",
-    description: "سياسة إرجاع 30 يومًا",
-    icon: RefreshCcw,
-  },
-  {
-    title: "دفع آمن",
-    description: "حماية عند الدفع",
     icon: ShieldCheck,
+    title: "دفع آمن",
+    description: "نستخدم أحدث تقنيات التشفير لحماية بياناتك.",
   },
   {
-    title: "دعم 24/7",
-    description: "متواجدون دائمًا للمساعدة",
-    icon: Clock,
+    icon: RefreshCcw,
+    title: "إرجاع مجاني",
+    description: "يمكنك إرجاع المنتجات خلال 14 يوماً بدون أي رسوم إضافية.",
+  },
+  {
+    icon: BadgePercent,
+    title: "خصومات حصرية",
+    description: "احصل على عروض وخصومات حصرية عند الاشتراك في نشرتنا.",
   },
 ];
 
 export const Features = () => {
   return (
-    <div className="bg-trendyol-lightGray py-10 w-full overflow-hidden">
-      <div className="container px-4 mx-auto">
-        <div className="grid grid-cols-2 md:grid-cols-4 gap-6">
-          {features.map((feature, index) => (
-            <div 
-              key={index} 
-              className="flex flex-col items-center text-center p-4 bg-white rounded-lg shadow-sm"
-            >
-              <div className="p-3 bg-trendyol-orange/10 rounded-full mb-3">
-                <feature.icon className="h-6 w-6 text-trendyol-orange" />
+    <section className="py-12 bg-white border-t border-b">
+      <div className="container mx-auto px-4">
+        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-6 text-center">
+          {features.map(({ icon: Icon, title, description }) => (
+            <div key={title} className="flex flex-col items-center space-y-3">
+              <div className="bg-gray-100 rounded-full p-3">
+                <Icon className="w-6 h-6 text-trendyol-orange" />
               </div>
-              <h3 className="font-medium text-gray-900">{feature.title}</h3>
-              <p className="text-sm text-gray-500 mt-1">{feature.description}</p>
+              <h3 className="font-semibold text-md">{title}</h3>
+              <p className="text-sm text-gray-600 leading-relaxed">
+                {description}
+              </p>
             </div>
           ))}
         </div>
       </div>
-    </div>
+    </section>
   );
 };

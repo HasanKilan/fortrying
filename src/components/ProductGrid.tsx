@@ -1,7 +1,9 @@
+// Localized ProductGrid.tsx — Static data version (RTL + Arabic)
+// File path: src/components/ProductGrid.tsx
 
 import { ProductCard } from "./ProductCard";
 
-// Sample product data
+// بيانات المنتجات
 const products = [
   {
     id: "1",
@@ -9,7 +11,8 @@ const products = [
     brand: "Fashion Basics",
     price: 24.99,
     originalPrice: 34.99,
-    image: "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+    image:
+      "https://images.unsplash.com/photo-1521572163474-6864f9cf17ab?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
     discount: 28,
   },
   {
@@ -17,7 +20,8 @@ const products = [
     name: "Slim Fit Jeans",
     brand: "Denim Co.",
     price: 49.99,
-    image: "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+    image:
+      "https://images.unsplash.com/photo-1541099649105-f69ad21f3246?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
     isNew: true,
   },
   {
@@ -26,7 +30,8 @@ const products = [
     brand: "Urban Style",
     price: 39.99,
     originalPrice: 59.99,
-    image: "https://images.unsplash.com/photo-1578681994506-b8f463449011?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+    image:
+      "https://images.unsplash.com/photo-1578681994506-b8f463449011?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
     discount: 33,
   },
   {
@@ -34,7 +39,8 @@ const products = [
     name: "Classic Leather Sneakers",
     brand: "FootGear",
     price: 79.99,
-    image: "https://images.unsplash.com/photo-1549298916-b41d501d3772?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+    image:
+      "https://images.unsplash.com/photo-1549298916-b41d501d3772?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
   },
   {
     id: "5",
@@ -42,7 +48,8 @@ const products = [
     brand: "Executive Line",
     price: 54.99,
     originalPrice: 69.99,
-    image: "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+    image:
+      "https://images.unsplash.com/photo-1598033129183-c4f50c736f10?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
     discount: 21,
   },
   {
@@ -50,7 +57,8 @@ const products = [
     name: "Summer Beach Shorts",
     brand: "Coastal Collection",
     price: 29.99,
-    image: "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+    image:
+      "https://images.unsplash.com/photo-1565084888279-aca607ecce0c?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
     isNew: true,
   },
   {
@@ -59,7 +67,8 @@ const products = [
     brand: "Cold Armor",
     price: 129.99,
     originalPrice: 179.99,
-    image: "https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+    image:
+      "https://images.unsplash.com/photo-1539533113208-f6df8cc8b543?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
     discount: 27,
   },
   {
@@ -67,7 +76,8 @@ const products = [
     name: "Designer Sunglasses",
     brand: "Vision Elite",
     price: 89.99,
-    image: "https://images.unsplash.com/photo-1572635196237-14b3f281503f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
+    image:
+      "https://images.unsplash.com/photo-1572635196237-14b3f281503f?ixlib=rb-1.2.1&auto=format&fit=crop&w=500&q=80",
     isNew: true,
   },
 ];
@@ -77,9 +87,9 @@ interface ProductGridProps {
   subtitle?: string;
 }
 
-export const ProductGrid = ({ title = "Featured Products", subtitle }: ProductGridProps) => {
+export const ProductGrid = ({ title = "منتجات مميزة", subtitle }: ProductGridProps) => {
   return (
-    <div className="py-10 w-full overflow-hidden">
+    <div className="py-10 w-full overflow-hidden rtl:text-right">
       <div className="container px-4 mx-auto">
         {title && (
           <div className="mb-8 text-center">
