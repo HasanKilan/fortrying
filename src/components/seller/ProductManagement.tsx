@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -11,8 +10,18 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 
+// Product interface
+interface Product {
+  id: string;
+  name: string;
+  category: string;
+  price: number;
+  stock: number;
+  status: "active" | "inactive" | "low_stock" | "out_of_stock";
+}
+
 // Mock product data
-const mockProducts = [
+const mockProducts: Product[] = [
   {
     id: "1",
     name: "قميص قطني أزرق",
@@ -78,16 +87,6 @@ const mockProducts = [
     status: "active"
   }
 ];
-
-// Product interface
-interface Product {
-  id: string;
-  name: string;
-  category: string;
-  price: number;
-  stock: number;
-  status: "active" | "inactive" | "low_stock" | "out_of_stock";
-}
 
 export function ProductManagement() {
   const [products, setProducts] = useState<Product[]>(mockProducts);

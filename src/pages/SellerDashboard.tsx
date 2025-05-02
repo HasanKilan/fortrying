@@ -1,9 +1,8 @@
-
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { Tabs, TabsList, TabsTrigger, TabsContent } from "@/components/ui/tabs";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
-import { BarChart, LineChart, Pie } from "lucide-react";
+import { BarChart, LineChart, PieChart } from "lucide-react";
 import { SellerHeader } from "@/components/seller/SellerHeader";
 import { SellerSidebar } from "@/components/seller/SellerSidebar";
 import { DashboardOverview } from "@/components/seller/DashboardOverview";
@@ -44,7 +43,7 @@ const SellerDashboard = () => {
                 <span>لوحة التحكم</span>
               </TabsTrigger>
               <TabsTrigger value="products" className="flex items-center gap-2">
-                <Pie className="h-4 w-4" />
+                <PieChart className="h-4 w-4" />
                 <span>المنتجات</span>
               </TabsTrigger>
               <TabsTrigger value="orders" className="flex items-center gap-2">

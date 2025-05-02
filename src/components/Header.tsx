@@ -8,8 +8,8 @@ import { useCart } from "@/hooks/use-cart";
 
 export function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
-  const { cartItems } = useCart();
-  const itemCount = cartItems.reduce((acc, item) => acc + item.quantity, 0);
+  const { items } = useCart();
+  const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
 
   return (
     <header className="sticky top-0 z-40 w-full border-b bg-background">
@@ -72,7 +72,7 @@ export function Header() {
           </div>
         </div>
       </div>
-      <CartSheet open={isCartOpen} onOpenChange={setIsCartOpen} />
+      <CartSheet isOpen={isCartOpen} setIsOpen={setIsCartOpen} />
     </header>
   );
 }

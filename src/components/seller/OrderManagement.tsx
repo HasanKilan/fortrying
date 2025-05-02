@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -9,8 +8,18 @@ import { Dialog, DialogContent, DialogDescription, DialogFooter, DialogHeader, D
 import { toast } from "sonner";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
+// Order interface
+interface Order {
+  id: string;
+  customer: string;
+  date: string;
+  total: number;
+  items: number;
+  status: "new" | "processing" | "shipped" | "delivered" | "canceled";
+}
+
 // Mock order data
-const mockOrders = [
+const mockOrders: Order[] = [
   {
     id: "10001",
     customer: "أحمد محمد",
@@ -84,16 +93,6 @@ const mockOrders = [
     status: "canceled"
   }
 ];
-
-// Order interface
-interface Order {
-  id: string;
-  customer: string;
-  date: string;
-  total: number;
-  items: number;
-  status: "new" | "processing" | "shipped" | "delivered" | "canceled";
-}
 
 // Mock order details
 const mockOrderItems = [
