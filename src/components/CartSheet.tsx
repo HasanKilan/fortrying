@@ -1,25 +1,25 @@
+
 // Localized CartSheet.tsx — Arabic UI
 // File path: src/components/CartSheet.tsx
 
 import { useCart } from "@/hooks/use-cart";
 import { Button } from "./ui/button";
-import { Sheet, SheetContent, SheetTrigger } from "./ui/sheet";
+import { Sheet, SheetContent, SheetClose } from "./ui/sheet";
 import { ShoppingBag } from "lucide-react";
 import { Link } from "react-router-dom";
 
-export const CartSheet = () => {
+interface CartSheetProps {
+  isOpen: boolean;
+  setIsOpen: (open: boolean) => void;
+}
+
+export const CartSheet = ({ isOpen, setIsOpen }: CartSheetProps) => {
   const { items, removeItem, clearCart } = useCart();
   const itemCount = items.reduce((total, item) => total + item.quantity, 0);
   const total = items.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
   return (
-    <Sheet>
-      <SheetTrigger asChild>
-        <Button variant="ghost" size="icon">
-          <ShoppingBag className="h-5 w-5" />
-          <span className="sr-only">عرض السلة</span>
-        </Button>
-      </SheetTrigger>
+    <Sheet open={isOpen} onOpenChange={setIsOpen}>
       <SheetContent side="left" className="w-[85%] sm:w-[350px]">
         <div className="flex items-center justify-between mb-4">
           <h2 className="text-lg font-semibold">السلة</h2>
