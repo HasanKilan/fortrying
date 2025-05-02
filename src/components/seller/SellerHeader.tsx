@@ -1,9 +1,9 @@
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
-import { Bell, Search, User } from "lucide-react";
+import { Bell, Search, User, Home } from "lucide-react";
 import { useSellerAuth } from "@/hooks/use-seller-auth";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 import { toast } from "sonner";
 
 export function SellerHeader() {
@@ -19,6 +19,13 @@ export function SellerHeader() {
   return (
     <header className="sticky top-0 z-30 flex h-16 items-center gap-4 border-b bg-background px-6">
       <div className="flex flex-1 items-center gap-4 md:gap-8">
+        <Link 
+          to="/"
+          className="text-sm font-medium text-trendyol-orange flex items-center gap-2"
+        >
+          <Home className="h-4 w-4" />
+          <span>العودة للمتجر</span>
+        </Link>
         <div className="relative rtl:ml-auto">
           <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground" />
           <Input
