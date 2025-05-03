@@ -1,12 +1,28 @@
 
 import { Link } from "react-router-dom";
 
+interface MegaMenuColumn {
+  title: string;
+  links: string[];
+}
+
+interface FeaturedItem {
+  title: string;
+  image: string;
+  link: string;
+}
+
+interface MegaMenuData {
+  columns: MegaMenuColumn[];
+  featured?: FeaturedItem;
+}
+
 interface MegaMenuProps {
   category: string;
 }
 
 // Sample mega menu data (would typically come from an API)
-const megaMenuData = {
+const megaMenuData: Record<string, MegaMenuData> = {
   all: {
     columns: [
       {
