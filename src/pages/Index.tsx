@@ -1,3 +1,4 @@
+
 // Localized Index.tsx — Arabic Homepage with Full Layout
 // File path: src/pages/Index.tsx
 
@@ -6,7 +7,7 @@ import { Hero } from "@/components/Hero";
 import { ProductGrid } from "@/components/ProductGrid";
 import { Features } from "@/components/Features";
 import { Footer } from "@/components/Footer";
-import { FloatingCartPreview } from "@/components/FloatingCartPreview"; // ✅ Floating cart
+import { FloatingCartPreview } from "@/components/FloatingCartPreview";
 
 const Index = () => {
   return (
@@ -20,7 +21,7 @@ const Index = () => {
       </main>
       <Footer />
 
-      {/* ✅ Floating Cart Preview Button */}
+      {/* Floating Cart Preview Button */}
       <FloatingCartPreview />
     </div>
   );
