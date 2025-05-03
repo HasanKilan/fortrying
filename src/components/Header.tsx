@@ -1,4 +1,3 @@
-
 import { useState } from "react";
 import { Menu, Search, ShoppingBag, User, ChevronDown, Heart } from "lucide-react";
 import { Link } from "react-router-dom";
@@ -223,26 +222,24 @@ export function Header() {
         </div>
       </div>
       
-      {/* Mobile horizontal scrolling categories */}
+      {/* Mobile horizontal scrolling categories - Fixed to enable proper scrolling */}
       {isMobile && (
-        <div className="w-full overflow-hidden border-t">
-          <ScrollArea className="w-full">
-            <div className="flex py-2 px-4 gap-4 whitespace-nowrap">
-              {categories.map((category) => (
-                <button
-                  key={category.id}
-                  onClick={() => handleMobileCategoryClick(category.id)}
-                  className={`px-3 py-1 rounded-full text-sm whitespace-nowrap transition-colors ${
-                    activeMobileCategory === category.id 
-                      ? 'bg-trendyol-orange text-white' 
-                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
-                  }`}
-                >
-                  {category.name}
-                </button>
-              ))}
-            </div>
-          </ScrollArea>
+        <div className="w-full overflow-x-auto border-t scrollbar-hide">
+          <div className="flex py-2 px-4 gap-4 whitespace-nowrap min-w-max">
+            {categories.map((category) => (
+              <button
+                key={category.id}
+                onClick={() => handleMobileCategoryClick(category.id)}
+                className={`px-3 py-1 rounded-full text-sm whitespace-nowrap transition-colors ${
+                  activeMobileCategory === category.id 
+                    ? 'bg-trendyol-orange text-white' 
+                    : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                }`}
+              >
+                {category.name}
+              </button>
+            ))}
+          </div>
         </div>
       )}
 
