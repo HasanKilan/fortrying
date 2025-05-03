@@ -1,3 +1,4 @@
+
 import { Link } from "react-router-dom";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { useIsMobile } from "@/hooks/use-mobile";
@@ -241,7 +242,8 @@ export const MegaMenu = ({ category }: MegaMenuProps) => {
                     <Link to="#" className="text-sm text-gray-600 hover:text-trendyol-orange">
                       {link}
                     </Link>
-                  ))}
+                  </li>
+                ))}
               </ul>
             </div>
           ))}
