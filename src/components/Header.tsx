@@ -8,11 +8,13 @@ import { useCart } from "@/hooks/use-cart";
 import { Sheet, SheetContent, SheetTrigger } from "@/components/ui/sheet";
 import { useIsMobile } from "@/hooks/use-mobile";
 import { MegaMenu } from "@/components/MegaMenu";
+import { ScrollArea } from "@/components/ui/scroll-area";
 
 export function Header() {
   const [isCartOpen, setIsCartOpen] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const [activeMegaMenu, setActiveMegaMenu] = useState<string | null>(null);
+  const [activeMobileCategory, setActiveMobileCategory] = useState<string | null>(null);
   const { items } = useCart();
   const itemCount = items.reduce((acc, item) => acc + item.quantity, 0);
   const isMobile = useIsMobile();
@@ -26,6 +28,14 @@ export function Header() {
   const handleCategoryLeave = () => {
     if (!isMobile) {
       setActiveMegaMenu(null);
+    }
+  };
+
+  const handleMobileCategoryClick = (category: string) => {
+    if (activeMobileCategory === category) {
+      setActiveMobileCategory(null);
+    } else {
+      setActiveMobileCategory(category);
     }
   };
 
@@ -106,49 +116,69 @@ export function Header() {
               </Button>
             </SheetTrigger>
             <SheetContent side="right" className="w-[85%] sm:w-[350px] p-0">
-              <div className="flex flex-col h-full py-6 px-4 overflow-auto">
-                <div className="flex flex-col gap-4">
-                  <div className="flex items-center mb-4 px-2 space-x-2 rtl:space-x-reverse">
+              <div className="flex flex-col h-full overflow-hidden">
+                <div className="p-4 border-b">
+                  <div className="flex items-center mb-4 space-x-2 rtl:space-x-reverse">
                     <div className="w-8 h-8 rounded-full bg-trendyol-orange flex items-center justify-center text-white">
                       T
                     </div>
                     <span className="font-bold">تريندي</span>
                   </div>
                   
-                  <nav className="flex flex-col space-y-4 w-full">
-                    <Link to="/" className="py-2 px-2 hover:bg-muted rounded-md text-sm font-medium">
-                      الرئيسية
-                    </Link>
-                    {categories.map(category => (
-                      <Link 
-                        key={category.id}
-                        to="#" 
-                        className="py-2 px-2 hover:bg-muted rounded-md text-sm font-medium flex justify-between items-center"
-                      >
-                        {category.name}
-                        <ChevronDown className="h-4 w-4" />
+                  <div className="relative w-full">
+                    <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground rtl-search-icon" />
+                    <input
+                      type="search"
+                      placeholder="البحث..."
+                      className="w-full rounded-md border pl-8 pr-10 py-2 focus:border-trendyol-orange focus:outline-none focus:ring-1 focus:ring-trendyol-orange"
+                    />
+                  </div>
+                </div>
+                
+                <ScrollArea className="flex-1 overflow-auto">
+                  <div className="p-4">
+                    <nav className="flex flex-col space-y-1">
+                      <Link to="/" className="py-2 px-2 hover:bg-muted rounded-md text-sm font-medium">
+                        الرئيسية
                       </Link>
-                    ))}
-                    <Link to="/seller/login" className="py-2 px-2 hover:bg-muted rounded-md text-sm font-medium text-trendyol-orange">
-                      بوابة البائعين
-                    </Link>
-                  </nav>
-                  
-                  <div className="mt-auto pt-4 border-t">
-                    <div className="relative w-full mb-4">
-                      <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground rtl-search-icon" />
-                      <input
-                        type="search"
-                        placeholder="البحث..."
-                        className="w-full rounded-md border pl-8 pr-10 focus:border-trendyol-orange focus:outline-none focus:ring-1 focus:ring-trendyol-orange"
-                      />
-                    </div>
-                    <div className="flex gap-2">
-                      <Button variant="outline" className="flex-1">
-                        <User className="h-4 w-4 mr-2" />
-                        حسابي
-                      </Button>
-                    </div>
+                      
+                      {categories.map(category => (
+                        <div key={category.id} className="flex flex-col">
+                          <button 
+                            onClick={() => handleMobileCategoryClick(category.id)}
+                            className="py-2 px-2 hover:bg-muted rounded-md text-sm font-medium flex justify-between items-center"
+                          >
+                            {category.name}
+                            <ChevronDown 
+                              className={`h-4 w-4 transition-transform ${activeMobileCategory === category.id ? 'rotate-180' : ''}`} 
+                            />
+                          </button>
+                          
+                          {activeMobileCategory === category.id && (
+                            <div className="pr-4 mt-1">
+                              <MegaMenu category={category.id} />
+                            </div>
+                          )}
+                        </div>
+                      ))}
+                      
+                      <Link to="/seller/login" className="py-2 px-2 hover:bg-muted rounded-md text-sm font-medium text-trendyol-orange">
+                        بوابة البائعين
+                      </Link>
+                    </nav>
+                  </div>
+                </ScrollArea>
+                
+                <div className="p-4 border-t">
+                  <div className="flex gap-2">
+                    <Button variant="outline" className="flex-1">
+                      <User className="h-4 w-4 mr-2" />
+                      حسابي
+                    </Button>
+                    <Button variant="outline" className="flex-1">
+                      <Heart className="h-4 w-4 mr-2" />
+                      المفضلة
+                    </Button>
                   </div>
                 </div>
               </div>

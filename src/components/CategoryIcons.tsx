@@ -4,6 +4,8 @@
 
 import { ShoppingBag, Gift, Percent, Coffee, CreditCard, Tag, Zap } from "lucide-react";
 import { Link } from "react-router-dom";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 const categories = [
   {
@@ -54,24 +56,46 @@ const categories = [
 ];
 
 export const CategoryIcons = () => {
+  const isMobile = useIsMobile();
+
   return (
-    <div className="py-6 bg-gray-50">
+    <div className="py-4 md:py-6 bg-gray-50">
       <div className="container mx-auto">
-        <div className="flex overflow-x-auto gap-6 justify-center pb-2">
-          {categories.map((category) => (
-            <Link to="#" key={category.name} className="flex flex-col items-center min-w-[80px] group">
-              <div className={`relative w-16 h-16 rounded-full ${category.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform`}>
-                <category.icon className={`h-7 w-7 ${category.iconColor}`} />
-                {category.badge && (
-                  <span className="absolute -top-1 -left-1 bg-trendyol-orange text-white text-[10px] px-1 py-0.5 rounded-full">
-                    {category.badge}
-                  </span>
-                )}
-              </div>
-              <span className="text-xs mt-2 text-center font-medium">{category.name}</span>
-            </Link>
-          ))}
-        </div>
+        {isMobile ? (
+          <ScrollArea className="w-full pb-2">
+            <div className="flex gap-4 pr-2">
+              {categories.map((category) => (
+                <Link to="#" key={category.name} className="flex flex-col items-center min-w-[80px] group">
+                  <div className={`relative w-14 h-14 rounded-full ${category.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                    <category.icon className={`h-6 w-6 ${category.iconColor}`} />
+                    {category.badge && (
+                      <span className="absolute -top-1 -left-1 bg-trendyol-orange text-white text-[10px] px-1 py-0.5 rounded-full">
+                        {category.badge}
+                      </span>
+                    )}
+                  </div>
+                  <span className="text-xs mt-2 text-center font-medium">{category.name}</span>
+                </Link>
+              ))}
+            </div>
+          </ScrollArea>
+        ) : (
+          <div className="flex justify-center gap-6">
+            {categories.map((category) => (
+              <Link to="#" key={category.name} className="flex flex-col items-center min-w-[80px] group">
+                <div className={`relative w-16 h-16 rounded-full ${category.bgColor} flex items-center justify-center group-hover:scale-110 transition-transform`}>
+                  <category.icon className={`h-7 w-7 ${category.iconColor}`} />
+                  {category.badge && (
+                    <span className="absolute -top-1 -left-1 bg-trendyol-orange text-white text-[10px] px-1 py-0.5 rounded-full">
+                      {category.badge}
+                    </span>
+                  )}
+                </div>
+                <span className="text-xs mt-2 text-center font-medium">{category.name}</span>
+              </Link>
+            ))}
+          </div>
+        )}
       </div>
     </div>
   );

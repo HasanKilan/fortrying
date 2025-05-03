@@ -1,5 +1,6 @@
-
 import { Link } from "react-router-dom";
+import { ScrollArea } from "@/components/ui/scroll-area";
+import { useIsMobile } from "@/hooks/use-mobile";
 
 interface MegaMenuColumn {
   title: string;
@@ -192,36 +193,73 @@ const megaMenuData: Record<string, MegaMenuData> = {
 
 export const MegaMenu = ({ category }: MegaMenuProps) => {
   const menuData = megaMenuData[category as keyof typeof megaMenuData] || megaMenuData.all;
+  const isMobile = useIsMobile();
 
   return (
-    <div className="container py-6 grid grid-cols-4 gap-8">
-      {menuData.columns.map((column, index) => (
-        <div key={index}>
-          <h3 className="font-bold text-gray-900 mb-3">{column.title}</h3>
-          <ul className="space-y-2">
-            {column.links.map((link, linkIndex) => (
-              <li key={linkIndex}>
-                <Link to="#" className="text-sm text-gray-600 hover:text-trendyol-orange">
-                  {link}
-                </Link>
-              </li>
+    <div className="container py-4 md:py-6">
+      {isMobile ? (
+        <ScrollArea className="w-full">
+          <div className="flex flex-col space-y-6 pb-4">
+            {menuData.columns.map((column, index) => (
+              <div key={index} className="min-w-[250px]">
+                <h3 className="font-bold text-gray-900 mb-3">{column.title}</h3>
+                <ul className="space-y-2">
+                  {column.links.map((link, linkIndex) => (
+                    <li key={linkIndex}>
+                      <Link to="#" className="text-sm text-gray-600 hover:text-trendyol-orange">
+                        {link}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </div>
             ))}
-          </ul>
-        </div>
-      ))}
-      
-      {menuData.featured && (
-        <div className="col-span-1">
-          <div className="rounded-lg overflow-hidden">
-            <Link to={menuData.featured.link}>
-              <h3 className="font-bold text-gray-900 mb-2">{menuData.featured.title}</h3>
-              <img 
-                src={menuData.featured.image} 
-                alt={menuData.featured.title} 
-                className="w-full h-40 object-cover rounded" 
-              />
-            </Link>
+            {menuData.featured && (
+              <div className="w-full">
+                <div className="rounded-lg overflow-hidden">
+                  <Link to={menuData.featured.link}>
+                    <h3 className="font-bold text-gray-900 mb-2">{menuData.featured.title}</h3>
+                    <img 
+                      src={menuData.featured.image} 
+                      alt={menuData.featured.title} 
+                      className="w-full h-40 object-cover rounded" 
+                    />
+                  </Link>
+                </div>
+              </div>
+            )}
           </div>
+        </ScrollArea>
+      ) : (
+        <div className="grid grid-cols-4 gap-8">
+          {menuData.columns.map((column, index) => (
+            <div key={index}>
+              <h3 className="font-bold text-gray-900 mb-3">{column.title}</h3>
+              <ul className="space-y-2">
+                {column.links.map((link, linkIndex) => (
+                  <li key={linkIndex}>
+                    <Link to="#" className="text-sm text-gray-600 hover:text-trendyol-orange">
+                      {link}
+                    </Link>
+                  ))}
+              </ul>
+            </div>
+          ))}
+          
+          {menuData.featured && (
+            <div className="col-span-1">
+              <div className="rounded-lg overflow-hidden">
+                <Link to={menuData.featured.link}>
+                  <h3 className="font-bold text-gray-900 mb-2">{menuData.featured.title}</h3>
+                  <img 
+                    src={menuData.featured.image} 
+                    alt={menuData.featured.title} 
+                    className="w-full h-40 object-cover rounded" 
+                  />
+                </Link>
+              </div>
+            </div>
+          )}
         </div>
       )}
     </div>
