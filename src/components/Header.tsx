@@ -62,6 +62,84 @@ export function Header() {
       </div>
       
       <div className="container flex h-16 items-center">
+        {/* Mobile Menu Button - Now on the right side */}
+        <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
+          <SheetTrigger asChild className="md:hidden">
+            <Button variant="ghost" size="icon">
+              <Menu className="h-6 w-6" />
+              <span className="sr-only">فتح القائمة</span>
+            </Button>
+          </SheetTrigger>
+          <SheetContent side="right" className="w-[85%] sm:w-[350px] p-0">
+            <div className="flex flex-col h-full overflow-hidden">
+              <div className="p-4 border-b">
+                <div className="flex items-center mb-4 space-x-2 rtl:space-x-reverse">
+                  <div className="w-8 h-8 rounded-full bg-trendyol-orange flex items-center justify-center text-white">
+                    T
+                  </div>
+                  <span className="font-bold">تريندي</span>
+                </div>
+                
+                <div className="relative w-full">
+                  <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground rtl-search-icon" />
+                  <input
+                    type="search"
+                    placeholder="البحث..."
+                    className="w-full rounded-md border pl-8 pr-10 py-2 focus:border-trendyol-orange focus:outline-none focus:ring-1 focus:ring-trendyol-orange"
+                  />
+                </div>
+              </div>
+              
+              <ScrollArea className="flex-1 overflow-auto">
+                <div className="p-4">
+                  <nav className="flex flex-col space-y-1">
+                    <Link to="/" className="py-2 px-2 hover:bg-muted rounded-md text-sm font-medium">
+                      الرئيسية
+                    </Link>
+                    
+                    {categories.map(category => (
+                      <div key={category.id} className="flex flex-col">
+                        <button 
+                          onClick={() => handleMobileCategoryClick(category.id)}
+                          className="py-2 px-2 hover:bg-muted rounded-md text-sm font-medium flex justify-between items-center"
+                        >
+                          {category.name}
+                          <ChevronDown 
+                            className={`h-4 w-4 transition-transform ${activeMobileCategory === category.id ? 'rotate-180' : ''}`} 
+                          />
+                        </button>
+                        
+                        {activeMobileCategory === category.id && (
+                          <div className="pr-4 mt-1">
+                            <MegaMenu category={category.id} />
+                          </div>
+                        )}
+                      </div>
+                    ))}
+                    
+                    <Link to="/seller/login" className="py-2 px-2 hover:bg-muted rounded-md text-sm font-medium text-trendyol-orange">
+                      بوابة البائعين
+                    </Link>
+                  </nav>
+                </div>
+              </ScrollArea>
+              
+              <div className="p-4 border-t">
+                <div className="flex gap-2">
+                  <Button variant="outline" className="flex-1">
+                    <User className="h-4 w-4 mr-2" />
+                    حسابي
+                  </Button>
+                  <Button variant="outline" className="flex-1">
+                    <Heart className="h-4 w-4 mr-2" />
+                    المفضلة
+                  </Button>
+                </div>
+              </div>
+            </div>
+          </SheetContent>
+        </Sheet>
+
         <div className="flex flex-1 items-center justify-end md:justify-between">
           <Link to="/" className="mr-6 flex items-center space-x-2 rtl:space-x-reverse">
             <div className="w-8 h-8 rounded-full bg-trendyol-orange flex items-center justify-center text-white">
@@ -107,84 +185,6 @@ export function Header() {
         </div>
         
         <div className="flex items-center gap-2 md:gap-4">
-          {/* Mobile Menu Button */}
-          <Sheet open={isMobileMenuOpen} onOpenChange={setIsMobileMenuOpen}>
-            <SheetTrigger asChild className="md:hidden">
-              <Button variant="ghost" size="icon">
-                <Menu className="h-6 w-6" />
-                <span className="sr-only">فتح القائمة</span>
-              </Button>
-            </SheetTrigger>
-            <SheetContent side="right" className="w-[85%] sm:w-[350px] p-0">
-              <div className="flex flex-col h-full overflow-hidden">
-                <div className="p-4 border-b">
-                  <div className="flex items-center mb-4 space-x-2 rtl:space-x-reverse">
-                    <div className="w-8 h-8 rounded-full bg-trendyol-orange flex items-center justify-center text-white">
-                      T
-                    </div>
-                    <span className="font-bold">تريندي</span>
-                  </div>
-                  
-                  <div className="relative w-full">
-                    <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground rtl-search-icon" />
-                    <input
-                      type="search"
-                      placeholder="البحث..."
-                      className="w-full rounded-md border pl-8 pr-10 py-2 focus:border-trendyol-orange focus:outline-none focus:ring-1 focus:ring-trendyol-orange"
-                    />
-                  </div>
-                </div>
-                
-                <ScrollArea className="flex-1 overflow-auto">
-                  <div className="p-4">
-                    <nav className="flex flex-col space-y-1">
-                      <Link to="/" className="py-2 px-2 hover:bg-muted rounded-md text-sm font-medium">
-                        الرئيسية
-                      </Link>
-                      
-                      {categories.map(category => (
-                        <div key={category.id} className="flex flex-col">
-                          <button 
-                            onClick={() => handleMobileCategoryClick(category.id)}
-                            className="py-2 px-2 hover:bg-muted rounded-md text-sm font-medium flex justify-between items-center"
-                          >
-                            {category.name}
-                            <ChevronDown 
-                              className={`h-4 w-4 transition-transform ${activeMobileCategory === category.id ? 'rotate-180' : ''}`} 
-                            />
-                          </button>
-                          
-                          {activeMobileCategory === category.id && (
-                            <div className="pr-4 mt-1">
-                              <MegaMenu category={category.id} />
-                            </div>
-                          )}
-                        </div>
-                      ))}
-                      
-                      <Link to="/seller/login" className="py-2 px-2 hover:bg-muted rounded-md text-sm font-medium text-trendyol-orange">
-                        بوابة البائعين
-                      </Link>
-                    </nav>
-                  </div>
-                </ScrollArea>
-                
-                <div className="p-4 border-t">
-                  <div className="flex gap-2">
-                    <Button variant="outline" className="flex-1">
-                      <User className="h-4 w-4 mr-2" />
-                      حسابي
-                    </Button>
-                    <Button variant="outline" className="flex-1">
-                      <Heart className="h-4 w-4 mr-2" />
-                      المفضلة
-                    </Button>
-                  </div>
-                </div>
-              </div>
-            </SheetContent>
-          </Sheet>
-          
           <div className="relative hidden md:block flex-1 max-w-md">
             <Search className="absolute right-2.5 top-2.5 h-4 w-4 text-muted-foreground rtl-search-icon" />
             <input
@@ -222,6 +222,29 @@ export function Header() {
         </div>
       </div>
       
+      {/* Mobile horizontal scrolling categories */}
+      {isMobile && (
+        <div className="w-full overflow-hidden border-t">
+          <ScrollArea orientation="horizontal" className="w-full">
+            <div className="flex py-2 px-4 gap-4 whitespace-nowrap">
+              {categories.map((category) => (
+                <button
+                  key={category.id}
+                  onClick={() => handleMobileCategoryClick(category.id)}
+                  className={`px-3 py-1 rounded-full text-sm whitespace-nowrap transition-colors ${
+                    activeMobileCategory === category.id 
+                      ? 'bg-trendyol-orange text-white' 
+                      : 'bg-gray-100 text-gray-700 hover:bg-gray-200'
+                  }`}
+                >
+                  {category.name}
+                </button>
+              ))}
+            </div>
+          </ScrollArea>
+        </div>
+      )}
+
       {/* Mega menu that appears on hover */}
       {activeMegaMenu && (
         <div 
