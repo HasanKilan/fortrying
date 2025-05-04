@@ -4,6 +4,8 @@ from app.schemas.auth import UserCreate, UserLogin, Token
 from app.models import models
 from app.db.database import SessionLocal
 from app.core.security import hash_password, verify_password, create_access_token
+from fastapi import Depends, APIRouter
+from app.dependencies import get_current_user
 
 router = APIRouter()
 
@@ -41,3 +43,8 @@ def login_user(user: UserLogin, db: Session = Depends(get_db)):
     
     token = create_access_token({"sub": db_user.email})
     return {"access_token": token, "token_type": "bearer"}
+
+
+@router.get("/me")
+def get_me(user: dict = Depends(get_current_user)):
+    return {"user": user}
