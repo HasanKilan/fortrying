@@ -5,8 +5,9 @@ from app.schemas.auth import UserCreate, UserLogin, Token, UserOut
 from app.models.models import User
 from app.db.database import SessionLocal
 from app.core.security import hash_password, verify_password, create_access_token
-from app.core.security import get_current_user
+from app.core.security import get_current_user_oauth2
 from fastapi.security import OAuth2PasswordRequestForm
+from app.dependencies import check_role  # ✅ import the role-checker
 
 router = APIRouter()
 
@@ -74,6 +75,11 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
 
 # ✅ Authenticated user
 @router.get("/me", response_model=UserOut)
-def get_me(user: User = Depends(get_current_user)):
+def get_me(user: User = Depends(get_current_user_oauth2)):
     return user
+
+
+@router.get("/admin-panel")
+def admin_only(user: User = Depends(check_role(["admin"]))):
+    return {"message": f"Welcome admin {user.name}!"}
 
