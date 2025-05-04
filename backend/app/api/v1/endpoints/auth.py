@@ -5,7 +5,8 @@ from app.schemas.auth import UserCreate, UserLogin, Token, UserOut
 from app.models.models import User
 from app.db.database import SessionLocal
 from app.core.security import hash_password, verify_password, create_access_token
-from app.dependencies import get_current_user
+from app.core.security import get_current_user
+
 
 router = APIRouter()
 
