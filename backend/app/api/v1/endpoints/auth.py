@@ -6,7 +6,7 @@ from app.db.database import SessionLocal
 from app.core.security import hash_password, verify_password, create_access_token
 from fastapi import Depends, APIRouter
 from app.dependencies import get_current_user
-
+from app.models.models import User
 router = APIRouter()
 
 def get_db():
@@ -46,5 +46,5 @@ def login_user(user: UserLogin, db: Session = Depends(get_db)):
 
 
 @router.get("/me")
-def get_me(user: dict = Depends(get_current_user)):
-    return {"user": user}
+def get_me(user = Depends(get_current_user)):
+    return user
