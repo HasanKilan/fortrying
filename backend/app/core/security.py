@@ -5,7 +5,7 @@ from fastapi import Depends, HTTPException
 from fastapi.security import OAuth2PasswordBearer, HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from app.core.config import settings
-from app.dependencies import get_db
+from app.db.database import SessionLocal
 from app.models.models import User
 
 # Password hashing config
@@ -16,6 +16,14 @@ ACCESS_TOKEN_EXPIRE_MINUTES = 30
 # Auth schemes
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="/auth/token")  # for standard routes
 http_bearer = HTTPBearer()  # for custom routes
+
+# ✅ Get DB session
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
 # ✅ Password utilities
 def hash_password(password: str) -> str:
@@ -75,3 +83,12 @@ def get_current_user_http(
 ):
     token = credentials.credentials
     return _decode_token_and_get_user(token, db)
+
+# ✅ Role-based access
+
+def check_role(allowed_roles: list[str]):
+    def role_checker(user: User = Depends(get_current_user_oauth2)):
+        if user.role not in allowed_roles:
+            raise HTTPException(status_code=403, detail="You don't have permission to access this resource.")
+        return user
+    return role_checker
