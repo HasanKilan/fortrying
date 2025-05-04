@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from app.db.database import engine
 from app.models import models
 from app.api.v1.endpoints import auth  # ✅ NEW
-from app.api import auth
+
 
 app = FastAPI()
 
