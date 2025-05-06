@@ -1,14 +1,32 @@
-from fastapi import APIRouter, Depends, HTTPException
+from fastapi import APIRouter, Depends, HTTPException, Body
 from fastapi.security import OAuth2PasswordRequestForm
+
 from sqlalchemy.orm import Session
-from app.schemas.auth import UserCreate, UserLogin, Token, UserOut
-from app.models.models import User, Seller
-from app.db.database import SessionLocal
-from app.core.security import hash_password, verify_password, create_access_token
-from app.core.security import get_current_user_oauth2
-from app.dependencies import check_role  # ✅ import the role-checker
+
 from pydantic import BaseModel, EmailStr
-from app.schemas.auth import SellerLogin
+
+# App imports
+from app.core.security import (
+    get_current_user_oauth2,
+    hash_password,
+    verify_password,
+)
+from app.utils.token import (
+    create_access_token,
+    create_refresh_token,
+    decode_refresh_token,
+)
+from app.db.database import SessionLocal
+from app.dependencies import check_role  # ✅ Role-checker
+from app.models.models import Seller, User, RefreshToken
+from app.schemas.auth import (
+    SellerLogin,
+    Token,
+    UserCreate,
+    UserLogin,
+    UserOut,
+)
+from datetime import datetime, timedelta
 
 router = APIRouter()
 
@@ -19,8 +37,6 @@ def get_db():
         yield db
     finally:
         db.close()
-
-
 
 
 # ✅ Seller registration schema
@@ -68,9 +84,12 @@ def login_seller(form_data: OAuth2PasswordRequestForm = Depends(), db: Session =
     if user.role != "seller":
         raise HTTPException(status_code=403, detail="Access restricted to sellers only")
 
-    token = create_access_token({"sub": user.email})
-    return {"access_token": token, "token_type": "bearer"}
+    access_token = create_access_token({"sub": user.email})
+    refresh_token = create_refresh_token({"sub": user.email})
+    db.add(RefreshToken(user_email=user.email, token=refresh_token))
+    db.commit()
 
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 
 # ✅ Register route
@@ -90,8 +109,12 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
     db.commit()
     db.refresh(new_user)
 
-    token = create_access_token({"sub": new_user.email})
-    return {"access_token": token, "token_type": "bearer"}
+    access_token = create_access_token({"sub": new_user.email})
+    refresh_token = create_refresh_token({"sub": new_user.email})
+    db.add(RefreshToken(user_email=new_user.email, token=refresh_token))
+    db.commit()
+
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 
 # ✅ Login with form (for Swagger)
@@ -101,8 +124,12 @@ def login_form(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = D
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    token = create_access_token({"sub": user.email})
-    return {"access_token": token, "token_type": "bearer"}
+    access_token = create_access_token({"sub": user.email})
+    refresh_token = create_refresh_token({"sub": user.email})
+    db.add(RefreshToken(user_email=user.email, token=refresh_token))
+    db.commit()
+
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 
 # ✅ Login with JSON (for Postman, mobile apps)
@@ -112,8 +139,12 @@ def login_json(user: UserLogin, db: Session = Depends(get_db)):
     if not db_user or not verify_password(user.password, db_user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
-    token = create_access_token({"sub": db_user.email})
-    return {"access_token": token, "token_type": "bearer"}
+    access_token = create_access_token({"sub": db_user.email})
+    refresh_token = create_refresh_token({"sub": db_user.email})
+    db.add(RefreshToken(user_email=db_user.email, token=refresh_token))
+    db.commit()
+
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 
 @router.post("/token", response_model=Token)
@@ -122,8 +153,12 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Incorrect email or password")
 
-    token = create_access_token({"sub": user.email})
-    return {"access_token": token, "token_type": "bearer"}
+    access_token = create_access_token({"sub": user.email})
+    refresh_token = create_refresh_token({"sub": user.email})
+    db.add(RefreshToken(user_email=user.email, token=refresh_token))
+    db.commit()
+
+    return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
 
 # ✅ Authenticated user
@@ -135,3 +170,71 @@ def get_me(user: User = Depends(get_current_user_oauth2)):
 @router.get("/admin-panel")
 def admin_only(user: User = Depends(check_role(["admin"], use_http=False))):
     return {"message": f"Welcome admin {user.name}!"}
+
+
+# ✅ Refresh token endpoint
+@router.post("/refresh", response_model=Token)
+def refresh_access_token(refresh_token: str = Body(...), db: Session = Depends(get_db)):
+    email = decode_refresh_token(refresh_token)
+    if not email:
+        raise HTTPException(status_code=401, detail="Invalid refresh token")
+
+    db_token = db.query(RefreshToken).filter_by(token=refresh_token, is_active=True).first()
+    if not db_token:
+        raise HTTPException(status_code=401, detail="Token expired or revoked")
+
+    db_token.is_active = False
+
+    new_access_token = create_access_token({"sub": email})
+    new_refresh_token = create_refresh_token({"sub": email})
+    db.add(RefreshToken(user_email=email, token=new_refresh_token))
+    db.commit()
+
+    return {
+        "access_token": new_access_token,
+        "refresh_token": new_refresh_token,
+        "token_type": "bearer"
+    }
+
+
+# ✅ Logout endpoint
+@router.post("/logout")
+def logout(refresh_token: str = Body(...), db: Session = Depends(get_db)):
+    token = db.query(RefreshToken).filter_by(token=refresh_token, is_active=True).first()
+    if not token:
+        raise HTTPException(status_code=404, detail="Token not found or already revoked")
+
+    token.is_active = False
+    db.commit()
+    return {"message": "Successfully logged out."}
+
+
+# ✅ Logout from all devices
+@router.post("/logout-all")
+def logout_all(refresh_token: str = Body(...), db: Session = Depends(get_db)):
+    email = decode_refresh_token(refresh_token)
+    if not email:
+        raise HTTPException(status_code=401, detail="Invalid refresh token")
+
+    tokens = db.query(RefreshToken).filter_by(user_email=email, is_active=True).all()
+    for token in tokens:
+        token.is_active = False
+
+    db.commit()
+    return {"message": "Logged out from all devices."}
+
+
+# ✅ Cleanup expired tokens
+@router.delete("/cleanup-expired-tokens")
+def cleanup_expired_tokens(user: User = Depends(check_role(["admin"])), db: Session = Depends(get_db)):
+    expiration_days = 7
+    threshold_date = datetime.utcnow() - timedelta(days=expiration_days)
+
+    expired_tokens = db.query(RefreshToken).filter(RefreshToken.created_at < threshold_date).all()
+    count = len(expired_tokens)
+
+    for token in expired_tokens:
+        db.delete(token)
+
+    db.commit()
+    return {"message": f"{count} expired refresh tokens deleted."}

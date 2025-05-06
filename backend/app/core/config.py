@@ -2,10 +2,16 @@ from pydantic_settings import BaseSettings
 
 class Settings(BaseSettings):
     secret_key: str
-    algorithm: str
+    algorithm: str = "HS256"
     database_url: str
+    ACCESS_TOKEN_EXPIRE_MINUTES: int
+    REFRESH_TOKEN_EXPIRE_DAYS: int
+    ACCESS_TOKEN_SECRET: str
+    REFRESH_TOKEN_SECRET: str
+
 
     class Config:
         env_file = ".env"
 
 settings = Settings()
+print("🔑 Secret key used:", settings.secret_key)

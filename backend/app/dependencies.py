@@ -56,11 +56,20 @@ def _decode_token_and_get_user(token: str, db: Session):
     credentials_exception = HTTPException(status_code=401, detail="Invalid credentials")
 
     try:
-        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+        print("🧪 Token:", token)  # Debug the incoming token
+
+        # 🧪 HARD PATCH: Use hardcoded secret
+        secret = "yx_-q7Y02KQd1oOf_Tupm0B9dzykNuLJvaRNFtZOL7KNbecq5a0cXz8V_cCLD8gI0pAWLF2SptFv-CbCq7R78g"
+        payload = jwt.decode(token, secret, algorithms=["HS256"])
+
+        print("🧪 Token Verified ✅")
+        print("🧪 Payload:", payload)
+
         email: str = payload.get("sub")
         if email is None:
             raise credentials_exception
-    except JWTError:
+    except JWTError as e:
+        print("🧨 JWT Error (hard patch):", e)
         raise credentials_exception
 
     user = db.query(User).filter(User.email == email).first()
@@ -82,6 +91,7 @@ def get_current_user_http(
     db: Session = Depends(get_db)
 ):
     token = credentials.credentials
+    print("🧪 Token (HTTPBearer):", token)  # Debug the HTTPBearer token
     return _decode_token_and_get_user(token, db)
 
 # ✅ Role-based access (OAuth2 or HTTPBearer)
