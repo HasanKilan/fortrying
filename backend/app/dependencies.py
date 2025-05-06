@@ -84,10 +84,15 @@ def get_current_user_http(
     token = credentials.credentials
     return _decode_token_and_get_user(token, db)
 
-# ✅ Role-based access
-def check_role(allowed_roles: list[str]):
-    def role_checker(user: User = Depends(get_current_user_oauth2)):
+# ✅ Role-based access (OAuth2 or HTTPBearer)
+def check_role(allowed_roles: list[str], use_http: bool = False):
+    def role_checker(
+        user: User = Depends(get_current_user_http if use_http else get_current_user_oauth2)
+    ):
         if user.role not in allowed_roles:
-            raise HTTPException(status_code=403, detail="You don't have permission to access this resource.")
+            raise HTTPException(
+                status_code=403,
+                detail="You don't have permission to access this resource."
+            )
         return user
     return role_checker
