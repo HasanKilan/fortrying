@@ -1,22 +1,22 @@
-# Byte-compiled / optimized / DLL files
+# Python artifacts
 __pycache__/
 *.py[cod]
 *$py.class
 
-# Virtual Environments
+# Virtual environments
 trendyenv/
 env/
 venv/
 
-# Environment variables file
+# Environment variables
 .env
 .env.*.local
 
-# macOS
+# macOS files
 .DS_Store
 __MACOSX/
 
-# Docker
+# Docker override
 docker-compose.override.yml
 
 # IDE settings
