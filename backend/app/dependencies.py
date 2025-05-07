@@ -7,6 +7,7 @@ from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.db.database import SessionLocal
 from app.models.models import User
+from pprint import pprint
 
 # Password hashing config
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -56,27 +57,26 @@ def _decode_token_and_get_user(token: str, db: Session):
     credentials_exception = HTTPException(status_code=401, detail="Invalid credentials")
 
     try:
-        print("🧪 Token:", token)  # Debug the incoming token
+        print("🧪 Token:", token)
+        print("🛡️ Secret used:", settings.secret_key)
+        payload = jwt.decode(token, settings.secret_key, algorithms=[settings.algorithm])
+        pprint(payload)
 
-        # 🧪 HARD PATCH: Use hardcoded secret
-        secret = "yx_-q7Y02KQd1oOf_Tupm0B9dzykNuLJvaRNFtZOL7KNbecq5a0cXz8V_cCLD8gI0pAWLF2SptFv-CbCq7R78g"
-        payload = jwt.decode(token, secret, algorithms=["HS256"])
-
-        print("🧪 Token Verified ✅")
-        print("🧪 Payload:", payload)
-
-        email: str = payload.get("sub")
+        email = payload.get("sub")
         if email is None:
             raise credentials_exception
     except JWTError as e:
-        print("🧨 JWT Error (hard patch):", e)
+        print("🧨 JWT Error:", e)
         raise credentials_exception
 
     user = db.query(User).filter(User.email == email).first()
+    print("👤 User from DB:", user)
+
     if user is None:
         raise credentials_exception
 
     return user
+
 
 # ✅ Standard OAuth2 token user
 def get_current_user_oauth2(

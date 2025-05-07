@@ -6,7 +6,7 @@ def create_access_token(data: dict):
     to_encode = data.copy()
     expire = datetime.utcnow() + timedelta(minutes=settings.ACCESS_TOKEN_EXPIRE_MINUTES)
     to_encode.update({"exp": expire})
-    return jwt.encode(to_encode, settings.ACCESS_TOKEN_SECRET, algorithm="HS256")
+    return jwt.encode(to_encode, settings.secret_key, algorithm=settings.algorithm)
 
 def create_refresh_token(data: dict):
     to_encode = data.copy()
@@ -20,3 +20,4 @@ def decode_refresh_token(token: str):
         return payload.get("sub")
     except JWTError:
         return None
+    
