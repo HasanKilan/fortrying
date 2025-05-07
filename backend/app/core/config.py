@@ -1,17 +1,16 @@
-from pydantic_settings import BaseSettings
+# app/core/config.py
+from pydantic import BaseSettings  # Ensure pydantic is installed
 
 class Settings(BaseSettings):
-    secret_key: str
-    algorithm: str = "HS256"
-    database_url: str
+    DATABASE_URL: str               # e.g. postgresql://user:pass@host/db
+    ACCESS_TOKEN_SECRET: str        # your JWT access-token secret
+    REFRESH_TOKEN_SECRET: str       # your JWT refresh-token secret
+    ALGORITHM: str = "HS256"
     ACCESS_TOKEN_EXPIRE_MINUTES: int
     REFRESH_TOKEN_EXPIRE_DAYS: int
-    ACCESS_TOKEN_SECRET: str
-    REFRESH_TOKEN_SECRET: str
-
 
     class Config:
         env_file = ".env"
+        env_file_encoding = "utf-8"
 
 settings = Settings()
-print("🔑 Secret key used:", settings.secret_key)
