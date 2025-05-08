@@ -106,3 +106,8 @@ def check_role(allowed_roles: list[str], use_http: bool = False):
             )
         return user
     return role_checker
+
+def get_current_seller(current_user: User = Depends(get_current_user_oauth2)) -> User:
+    if current_user.role != "seller":
+        raise HTTPException(status_code=403, detail="Only sellers can perform this action.")
+    return current_user

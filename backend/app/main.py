@@ -27,7 +27,7 @@ app = FastAPI(
     redoc_url=None
 )
 
-models.Base.metadata.create_all(bind=engine)
+#models.Base.metadata.create_all(bind=engine)
 
 app.include_router(auth.router, prefix="/auth", tags=["Auth"])
 app.include_router(product.router, tags=["Products"])

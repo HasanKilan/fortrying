@@ -38,7 +38,6 @@ def get_db():
     finally:
         db.close()
 
-
 # ✅ Seller registration schema
 class SellerRegister(BaseModel):
     name: str
@@ -46,11 +45,10 @@ class SellerRegister(BaseModel):
     password: str
     store_name: str
 
-
 # ✅ Register Seller
 @router.post("/register-seller", status_code=201)
 def register_seller(data: SellerRegister, db: Session = Depends(get_db)):
-    if db.query(User).filter_by(email=data.email).first():
+    if db.query(User).filter_by(email=data.email).first() or db.query(Seller).filter_by(email=data.email).first():
         raise HTTPException(status_code=400, detail="Email already registered")
 
     hashed_pw = hash_password(data.password)
@@ -91,12 +89,10 @@ def login_seller(form_data: OAuth2PasswordRequestForm = Depends(), db: Session =
 
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
-
 # ✅ Register route
 @router.post("/register", response_model=Token)
 def register_user(user: UserCreate, db: Session = Depends(get_db)):
-    existing = db.query(User).filter(User.email == user.email).first()
-    if existing:
+    if db.query(User).filter(User.email == user.email).first() or db.query(Seller).filter(Seller.email == user.email).first():
         raise HTTPException(status_code=400, detail="Email already registered.")
 
     hashed_pw = hash_password(user.password)
@@ -116,13 +112,15 @@ def register_user(user: UserCreate, db: Session = Depends(get_db)):
 
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
-
 # ✅ Login with form (for Swagger)
 @router.post("/login", response_model=Token)
 def login_form(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
     user = db.query(User).filter(User.email == form_data.username).first()
     if not user or not verify_password(form_data.password, user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
+
+    if user.role != "user":
+        raise HTTPException(status_code=403, detail="Access restricted to users only")
 
     access_token = create_access_token({"sub": user.email})
     refresh_token = create_refresh_token({"sub": user.email})
@@ -131,7 +129,6 @@ def login_form(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = D
 
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
-
 # ✅ Login with JSON (for Postman, mobile apps)
 @router.post("/login/json", response_model=Token)
 def login_json(user: UserLogin, db: Session = Depends(get_db)):
@@ -139,13 +136,15 @@ def login_json(user: UserLogin, db: Session = Depends(get_db)):
     if not db_user or not verify_password(user.password, db_user.hashed_password):
         raise HTTPException(status_code=401, detail="Invalid credentials")
 
+    if db_user.role != "user":
+        raise HTTPException(status_code=403, detail="Access restricted to users only")
+
     access_token = create_access_token({"sub": db_user.email})
     refresh_token = create_refresh_token({"sub": db_user.email})
     db.add(RefreshToken(user_email=db_user.email, token=refresh_token))
     db.commit()
 
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
-
 
 @router.post("/token", response_model=Token)
 def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
@@ -160,17 +159,14 @@ def login_for_access_token(form_data: OAuth2PasswordRequestForm = Depends(), db:
 
     return {"access_token": access_token, "refresh_token": refresh_token, "token_type": "bearer"}
 
-
 # ✅ Authenticated user
 @router.get("/me", response_model=UserOut)
 def get_me(user: User = Depends(get_current_user_oauth2)):
     return user
 
-
 @router.get("/admin-panel")
 def admin_only(user: User = Depends(check_role(["admin"], use_http=False))):
     return {"message": f"Welcome admin {user.name}!"}
-
 
 # ✅ Refresh token endpoint
 @router.post("/refresh", response_model=Token)
@@ -196,7 +192,6 @@ def refresh_access_token(refresh_token: str = Body(...), db: Session = Depends(g
         "token_type": "bearer"
     }
 
-
 # ✅ Logout endpoint
 @router.post("/logout")
 def logout(refresh_token: str = Body(...), db: Session = Depends(get_db)):
@@ -207,7 +202,6 @@ def logout(refresh_token: str = Body(...), db: Session = Depends(get_db)):
     token.is_active = False
     db.commit()
     return {"message": "Successfully logged out."}
-
 
 # ✅ Logout from all devices
 @router.post("/logout-all")
@@ -222,7 +216,6 @@ def logout_all(refresh_token: str = Body(...), db: Session = Depends(get_db)):
 
     db.commit()
     return {"message": "Logged out from all devices."}
-
 
 # ✅ Cleanup expired tokens
 @router.delete("/cleanup-expired-tokens")
