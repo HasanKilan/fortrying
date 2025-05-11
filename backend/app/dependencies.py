@@ -1,13 +1,15 @@
 from datetime import datetime, timedelta
 from jose import JWTError, jwt
 from passlib.context import CryptContext
-from fastapi import Depends, HTTPException
+from fastapi import Depends, HTTPException, Request
 from fastapi.security import OAuth2PasswordBearer, HTTPBearer, HTTPAuthorizationCredentials
 from sqlalchemy.orm import Session
 from app.core.config import settings
 from app.db.database import SessionLocal
 from app.models.models import User
 from pprint import pprint
+from app.models.models import Seller 
+
 
 # Password hashing config
 pwd_context = CryptContext(schemes=["bcrypt"], deprecated="auto")
@@ -78,6 +80,17 @@ def _decode_token_and_get_user(token: str, db: Session):
     return user
 
 
+def get_current_user_cookie(request: Request, db: Session = Depends(get_db)):
+    token = request.cookies.get("access_token")
+    if not token:
+        raise HTTPException(status_code=401, detail="Access token missing in cookies")
+    
+    if token.startswith("Bearer "):
+        token = token.replace("Bearer ", "")
+    
+    return _decode_token_and_get_user(token, db)
+
+
 # ✅ Standard OAuth2 token user
 def get_current_user_oauth2(
     token: str = Depends(oauth2_scheme),
@@ -97,17 +110,41 @@ def get_current_user_http(
 # ✅ Role-based access (OAuth2 or HTTPBearer)
 def check_role(allowed_roles: list[str], use_http: bool = False):
     def role_checker(
-        user: User = Depends(get_current_user_http if use_http else get_current_user_oauth2)
+        user: User = Depends(get_current_user_http if use_http else get_current_user_cookie)
     ):
-        if user.role not in allowed_roles:
-            raise HTTPException(
-                status_code=403,
-                detail="You don't have permission to access this resource."
-            )
-        return user
+        db = SessionLocal()
+        try:
+            if user.role not in allowed_roles:
+                raise HTTPException(
+                    status_code=403,
+                    detail="You don't have permission to access this resource."
+                )
+            
+            if user.role == "seller" and "seller" in allowed_roles:
+                seller = db.query(Seller).filter(Seller.email == user.email).first()
+                if not seller:
+                    raise HTTPException(status_code=404, detail="Seller not found")
+                return seller
+
+            return user
+        finally:
+            db.close()
     return role_checker
 
-def get_current_seller(current_user: User = Depends(get_current_user_oauth2)) -> User:
+
+def get_current_seller(current_user: User = Depends(check_role(["seller"], use_http=False))) -> Seller:
+    # Ensure the current user has the "seller" role
     if current_user.role != "seller":
         raise HTTPException(status_code=403, detail="Only sellers can perform this action.")
-    return current_user
+
+    # Query the Seller object from DB
+    db = SessionLocal()
+    seller = db.query(Seller).filter(Seller.email == current_user.email).first()
+    db.close()
+
+    if not seller:
+        raise HTTPException(status_code=404, detail="Seller profile not found")
+
+    return seller
+
+

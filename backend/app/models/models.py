@@ -4,7 +4,6 @@ from sqlalchemy.orm import relationship
 from datetime import datetime
 from app.db.database import Base
 
-
 class RefreshToken(Base):
     __tablename__ = "refresh_tokens"
 
@@ -24,6 +23,7 @@ class User(Base):
     hashed_password = Column(String)
     is_active = Column(Boolean, default=True)
     role = Column(String, default="user")  # ✅ 'user', 'seller', 'admin'
+    addresses = relationship("Address", back_populates="user", cascade="all, delete-orphan")
 
 class Seller(Base):
     __tablename__ = "sellers"
@@ -35,7 +35,13 @@ class Seller(Base):
     is_verified = Column(Boolean, default=False)
 
     products = relationship("Product", back_populates="seller")
-
+    order_items = relationship(
+        "OrderItem",
+        viewonly=True,
+        secondary="products",
+        primaryjoin="Seller.id==Product.seller_id",
+        secondaryjoin="Product.id==OrderItem.product_id"
+    )
 class Product(Base):
     __tablename__ = "products"
 
@@ -50,6 +56,7 @@ class Product(Base):
     
     seller = relationship("Seller", back_populates="products")
     category = relationship("Category", back_populates="products")
+    order_items = relationship("OrderItem", back_populates="product")
 
 class Category(Base):
     __tablename__ = "categories"
@@ -59,3 +66,69 @@ class Category(Base):
     description = Column(Text, nullable=True)
 
     products = relationship("Product", back_populates="category")
+
+
+
+class CartItem(Base):
+    __tablename__ = "cart_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    quantity = Column(Integer, nullable=False)
+
+    user = relationship("User")
+    product = relationship("Product")
+
+
+class Order(Base):
+    __tablename__ = "orders"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    created_at = Column(DateTime, default=datetime.utcnow)
+
+    user = relationship("User")
+    items = relationship("OrderItem", back_populates="order")
+
+
+class OrderItem(Base):
+    __tablename__ = "order_items"
+
+    id = Column(Integer, primary_key=True, index=True)
+    order_id = Column(Integer, ForeignKey("orders.id"), nullable=False)
+    product_id = Column(Integer, ForeignKey("products.id"), nullable=False)
+    quantity = Column(Integer, nullable=False)
+    unit_price = Column(Float, nullable=False)
+
+    order = relationship("Order", back_populates="items")
+    product = relationship("Product", back_populates="order_items")
+
+
+
+class Address(Base):
+    __tablename__ = "addresses"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_id = Column(Integer, ForeignKey("users.id"), nullable=False)
+    title = Column(String, nullable=False)  # e.g., "Home", "Work"
+    street = Column(String, nullable=False)
+    city = Column(String, nullable=False)
+    state = Column(String, nullable=True)
+    postal_code = Column(String, nullable=True)
+    country = Column(String, nullable=False)
+    is_default = Column(Boolean, default=False)
+
+    user = relationship("User", back_populates="addresses")
+
+
+class AddressAuditLog(Base):
+    __tablename__ = "address_audit_logs"
+
+    id = Column(Integer, primary_key=True, index=True)
+    user_email = Column(String, nullable=False)
+    address_id = Column(Integer, nullable=False)
+    action = Column(String, nullable=False)  # "create", "update", etc.
+    timestamp = Column(DateTime, default=datetime.utcnow)
+    ip_address = Column(String, nullable=True)
+    user_agent = Column(String, nullable=True)

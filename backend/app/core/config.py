@@ -1,4 +1,4 @@
-from pydantic_settings import BaseSettings
+from pydantic_settings import BaseSettings, SettingsConfigDict
 
 class Settings(BaseSettings):
     secret_key: str
@@ -10,8 +10,10 @@ class Settings(BaseSettings):
     REFRESH_TOKEN_SECRET: str
 
 
+
     class Config:
         env_file = ".env"
+        extra = "allow"
 
 settings = Settings()
 
