@@ -42,6 +42,7 @@ class Seller(Base):
         primaryjoin="Seller.id==Product.seller_id",
         secondaryjoin="Product.id==OrderItem.product_id"
     )
+    
 class Product(Base):
     __tablename__ = "products"
 

@@ -9,11 +9,8 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_SECRET: str
     REFRESH_TOKEN_SECRET: str
 
-
-
     class Config:
-        env_file = ".env"
-        extra = "allow"
+        env_file=".env",
+        extra="allow"
 
 settings = Settings()
-
