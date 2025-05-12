@@ -1,0 +1,41 @@
+# render.yaml
+
+services:
+  # 1) Managed Postgres
+  - type: database
+    name: fortrying-db
+    plan: starter
+    region: oregon        # pick your nearest region
+    databaseName: fortrying_prod
+
+  # 2) FastAPI backend
+  - type: web
+    name: fortrying-backend
+    env: docker
+    dockerfilePath: backend/Dockerfile
+    buildCommand: docker build -f backend/Dockerfile -t fortrying-backend .
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: DATABASE_URL
+        fromDatabase: fortrying-db
+      - key: ACCESS_TOKEN_SECRET
+        sync: false
+      - key: REFRESH_TOKEN_SECRET
+        sync: false
+      - key: CORS_ORIGINS
+        value: https://fortrying.onrender.com
+    healthCheckPath: /health
+
+  # 3) Next.js frontend (static export)
+  - type: web
+    name: fortrying-frontend
+    env: static
+    buildCommand: |
+      cd frontend
+      npm ci
+      npm run build
+      npm run export
+    staticPublishPath: frontend/out
+    envVars:
+      - key: NEXT_PUBLIC_API_URL
+        value: https://fortrying-backend.onrender.com
